@@ -1,0 +1,20 @@
+[
+    [
+        1,
+        "USD",
+        "America",
+        "$"
+    ],
+    [
+        2,
+        "RUB",
+        "Russian Federation",
+        "\u0420\u0443\u0431"
+    ],
+    [
+        3,
+        "EUR",
+        "Europe",
+        "\u042d"
+    ]
+]
