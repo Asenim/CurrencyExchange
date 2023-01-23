@@ -1,9 +1,8 @@
 import sqlite3
-import json
 from scr.abstract_requests_classes.Abstract_Get_Requests import AbstractGetRequests
 
 
-class GetOutputCurrencies(AbstractGetRequests):
+class GetOutputExchangeRates(AbstractGetRequests):
     def __init__(self, path_data_base=None):
 
         super().__init__(path_data_base)
@@ -16,7 +15,10 @@ class GetOutputCurrencies(AbstractGetRequests):
 
         # Создается запрос
         __all_data = __cursor.execute(f"""
-        SELECT * FROM Currencies;
+            SELECT E.ID, C.Code, C2.Code, Rate 
+            FROM ExchangeRates E
+            JOIN Currencies C on E.BaseCurrencyID = C.ID
+            JOIN Currencies C2 on E.TargetCurrencyID = C2.ID;
         """)
         self._converter_json_string(__all_data)
 
@@ -30,31 +32,21 @@ class GetOutputCurrencies(AbstractGetRequests):
         __cursor = __data_base.cursor()
 
         specific_currency = __cursor.execute(f"""
-        SELECT * FROM Currencies
-        WHERE ID = {code_currency};
+            SELECT E.ID, C.Code, C2.Code, Rate 
+            FROM ExchangeRates E
+            JOIN Currencies C on E.BaseCurrencyID = C.ID
+            JOIN Currencies C2 on E.TargetCurrencyID = C2.ID
+            WHERE E.ID = {code_currency}
         """)
         self._converter_json_string(specific_currency)
 
         __cursor.close()
         __data_base.close()
 
-    @staticmethod
-    def _converter_json_string(object_db):
-
-        __decode_data = object_db.fetchall()
-        __data_json = json.dumps(__decode_data, indent=6, ensure_ascii=False)
-
-        if len(__data_json) <= 2:
-            print('Такой валюты нет')
-            return 'Такой валюты нет'
-        else:
-            print(__data_json)
-            return __data_json
-
 
 def test_class():
     path = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
-    db_admin = GetOutputCurrencies(path)
+    db_admin = GetOutputExchangeRates(path)
     db_admin.get_all()
     db_admin.get_specific('1')
 

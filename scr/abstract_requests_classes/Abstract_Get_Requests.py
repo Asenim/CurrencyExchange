@@ -1,3 +1,6 @@
+import json
+
+
 class AbstractGetRequests:
     def __init__(self, path_data_base=None):
         """
@@ -43,4 +46,12 @@ class AbstractGetRequests:
         :param object_db: Принимает на вход объект базы данных
         :return: json строка/объект
         """
-        pass
+        __decode_data = object_db.fetchall()
+        __data_json = json.dumps(__decode_data, indent=6, ensure_ascii=False)
+
+        if len(__data_json) <= 2:
+            print('Такой информации нет')
+            return 'Такой информации в базе данных нет'
+        else:
+            print(__data_json)
+            return __data_json
