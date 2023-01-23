@@ -3,6 +3,7 @@ from scr.abstract_requests_classes.Abstract_Get_Requests import AbstractGetReque
 
 
 class GetOutputExchangeRates(AbstractGetRequests):
+
     def __init__(self, path_data_base=None):
 
         super().__init__(path_data_base)
