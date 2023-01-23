@@ -36,8 +36,8 @@ class GetOutputExchangeRates(AbstractGetRequests):
             FROM ExchangeRates E
             JOIN Currencies C on E.BaseCurrencyID = C.ID
             JOIN Currencies C2 on E.TargetCurrencyID = C2.ID
-            WHERE E.ID = {code_currency}
-        """)
+            WHERE C.Code = ? and C2.Code = ?
+        """, (code_currency[0:3], code_currency[3:]))
         self._converter_json_string(specific_currency)
 
         __cursor.close()
@@ -48,7 +48,7 @@ def test_class():
     path = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
     db_admin = GetOutputExchangeRates(path)
     db_admin.get_all()
-    db_admin.get_specific('1')
+    db_admin.get_specific('USDEUR')
 
 
 if __name__ == "__main__":

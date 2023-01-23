@@ -30,8 +30,8 @@ class GetOutputCurrencies(AbstractGetRequests):
 
         specific_currency = __cursor.execute(f"""
             SELECT * FROM Currencies
-            WHERE ID = {code_currency};
-        """)
+            WHERE Code = ?;
+        """, (code_currency,))
         self._converter_json_string(specific_currency)
 
         __cursor.close()
@@ -42,7 +42,7 @@ def test_class():
     path = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
     db_admin = GetOutputCurrencies(path)
     db_admin.get_all()
-    db_admin.get_specific('4')
+    db_admin.get_specific('RUB')
 
 
 if __name__ == "__main__":
