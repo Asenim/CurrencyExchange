@@ -10,36 +10,59 @@ class GetOutputCurrencies(AbstractGetRequests):
 
     def get_all(self):
 
-        # Происходит подключение к базе данных
-        __data_base = sqlite3.connect(self._path_db)
-        __cursor = __data_base.cursor()
+        try:
 
-        # Создается запрос
-        __all_data = __cursor.execute(f"""
-            SELECT * FROM Currencies;
-        """)
-        self._converter_json_string(__all_data)
+            # Происходит подключение к базе данных
+            __data_base = sqlite3.connect(self._path_db)
+            __cursor = __data_base.cursor()
 
-        # Закрываем базу данных
-        __cursor.close()
-        __data_base.close()
+            print("Подключение к базе данных прошло успешно")
+
+            # Создается запрос
+            __all_data = __cursor.execute(f"""
+                SELECT * FROM Currencies;
+            """)
+            self._converter_json_string(__all_data)
+
+            # Закрываем базу данных
+            if __data_base:
+                __cursor.close()
+                __data_base.close()
+
+                print("Соединение с базой данных закрыто")
+
+        except sqlite3.Error as error_connected:
+
+            print("Ошибка при работе с SQLite", error_connected)
 
     def get_specific(self, code_currency):
 
-        __data_base = sqlite3.connect(self._path_db)
-        __cursor = __data_base.cursor()
+        try:
 
-        specific_currency = __cursor.execute(f"""
-            SELECT * FROM Currencies
-            WHERE Code = ?;
-        """, (code_currency,))
-        self._converter_json_string(specific_currency)
+            __data_base = sqlite3.connect(self._path_db)
+            __cursor = __data_base.cursor()
 
-        __cursor.close()
-        __data_base.close()
+            print("Подключение к базе данных прошло успешно")
+
+            specific_currency = __cursor.execute(f"""
+                SELECT * FROM Currencies
+                WHERE Code = ?;
+            """, (code_currency,))
+            self._converter_json_string(specific_currency)
+
+            if __data_base:
+                __cursor.close()
+                __data_base.close()
+
+                print("Соединение с базой данных закрыто")
+
+        except sqlite3.Error as error_connected:
+
+            print("Ошибка при работе с SQLite", error_connected)
 
 
 def test_class():
+
     path = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
     db_admin = GetOutputCurrencies(path)
     db_admin.get_all()

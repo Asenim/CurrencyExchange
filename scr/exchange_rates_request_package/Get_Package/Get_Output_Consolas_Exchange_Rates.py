@@ -10,39 +10,61 @@ class GetOutputExchangeRates(AbstractGetRequests):
 
     def get_all(self):
 
-        # Происходит подключение к базе данных
-        __data_base = sqlite3.connect(self._path_db)
-        __cursor = __data_base.cursor()
+        try:
 
-        # Создается запрос
-        __all_data = __cursor.execute(f"""
-            SELECT E.ID, C.Code, C2.Code, Rate 
-            FROM ExchangeRates E
-            JOIN Currencies C on E.BaseCurrencyID = C.ID
-            JOIN Currencies C2 on E.TargetCurrencyID = C2.ID;
-        """)
-        self._converter_json_string(__all_data)
+            # Происходит подключение к базе данных
+            __data_base = sqlite3.connect(self._path_db)
+            __cursor = __data_base.cursor()
 
-        # Закрываем базу данных
-        __cursor.close()
-        __data_base.close()
+            print("Подключение к базе данных прошло успешно")
+
+            # Создается запрос
+            __all_data = __cursor.execute(f"""
+                SELECT E.ID, C.Code, C2.Code, Rate 
+                FROM ExchangeRates E
+                JOIN Currencies C on E.BaseCurrencyID = C.ID
+                JOIN Currencies C2 on E.TargetCurrencyID = C2.ID;
+            """)
+            self._converter_json_string(__all_data)
+
+            # Закрываем базу данных
+            if __data_base:
+                __cursor.close()
+                __data_base.close()
+
+                print("Соединение закрыто")
+
+        except sqlite3.Error as error_connected:
+
+            print("Ошибка при работе с SQLite", error_connected)
 
     def get_specific(self, code_currency):
 
-        __data_base = sqlite3.connect(self._path_db)
-        __cursor = __data_base.cursor()
+        try:
 
-        specific_currency = __cursor.execute(f"""
-            SELECT E.ID, C.Code, C2.Code, Rate 
-            FROM ExchangeRates E
-            JOIN Currencies C on E.BaseCurrencyID = C.ID
-            JOIN Currencies C2 on E.TargetCurrencyID = C2.ID
-            WHERE C.Code = ? and C2.Code = ?
-        """, (code_currency[0:3], code_currency[3:]))
-        self._converter_json_string(specific_currency)
+            __data_base = sqlite3.connect(self._path_db)
+            __cursor = __data_base.cursor()
 
-        __cursor.close()
-        __data_base.close()
+            print("Подключение к базе данных прошло успешно")
+
+            specific_currency = __cursor.execute(f"""
+                SELECT E.ID, C.Code, C2.Code, Rate 
+                FROM ExchangeRates E
+                JOIN Currencies C on E.BaseCurrencyID = C.ID
+                JOIN Currencies C2 on E.TargetCurrencyID = C2.ID
+                WHERE C.Code = ? and C2.Code = ?
+            """, (code_currency[0:3], code_currency[3:]))
+            self._converter_json_string(specific_currency)
+
+            if __data_base:
+                __cursor.close()
+                __data_base.close()
+
+                print("Соединение закрыто")
+
+        except sqlite3.Error as error_connected:
+
+            print("Ошибка при работе с SQLite", error_connected)
 
 
 def test_class():

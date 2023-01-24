@@ -7,7 +7,17 @@ class AbstractGetRequests(AbstractRequests, ABC):
 
     @abstractmethod
     def __init__(self, path_data_base=None):
+        """
+        Абстрактный класс который позволяет работать
+        с классами get запросов.
+        Данные классы обращаются к базе данных
+        вытаскивают от туда информацию, после
+        чего отравляют пользователю и возвращают
+        в формате json.
+            P.S. В зависимости от реализации отправка осуществляется
+            в консоль или же в браузер.
 
+        """
         super().__init__(path_data_base)
 
     @abstractmethod
