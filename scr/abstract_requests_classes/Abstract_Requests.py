@@ -1,7 +1,9 @@
-import json
+from abc import *
 
 
-class AbstractRequests:
+class AbstractRequests(ABC):
+
+    @abstractmethod
     def __init__(self, path_data_base=None):
         """
         Класс работает с базой данных
@@ -18,6 +20,7 @@ class AbstractRequests:
             self._path_db = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
 
     @staticmethod
+    @abstractmethod
     def _converter_json_string(object_db):
         """
         Метод конвертирует информацию из запросов
@@ -26,12 +29,4 @@ class AbstractRequests:
         :param object_db: Принимает на вход объект базы данных
         :return: json строка/объект
         """
-        __decode_data = object_db.fetchall()
-        __data_json = json.dumps(__decode_data, indent=6, ensure_ascii=False)
-
-        if len(__data_json) <= 2:
-            print('Такой информации в базе данных нет')
-            return 'Такой информации в базе данных нет'
-        else:
-            print(__data_json)
-            return __data_json
+        pass
