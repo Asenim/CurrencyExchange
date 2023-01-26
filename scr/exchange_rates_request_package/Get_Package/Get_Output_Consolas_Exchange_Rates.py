@@ -10,12 +10,11 @@ class GetOutputExchangeRates(AbstractGetRequests):
 
     def get_all(self):
 
+        # Происходит подключение к базе данных
+        __data_base = sqlite3.connect(self._path_db)
+        __cursor = __data_base.cursor()
+
         try:
-
-            # Происходит подключение к базе данных
-            __data_base = sqlite3.connect(self._path_db)
-            __cursor = __data_base.cursor()
-
             print("Подключение к базе данных прошло успешно")
 
             # Создается запрос
@@ -27,24 +26,22 @@ class GetOutputExchangeRates(AbstractGetRequests):
             """)
             self._converter_json_string(__all_data)
 
-            # Закрываем базу данных
-            if __data_base:
-                __cursor.close()
-                __data_base.close()
-
-                print("Соединение закрыто")
-
         except sqlite3.Error as error_connected:
-
             print("Ошибка при работе с SQLite", error_connected)
+
+        finally:
+            # Закрываем базу данных
+            __cursor.close()
+            __data_base.close()
+
+            print("Соединение закрыто")
 
     def get_specific(self, code_currency):
 
+        __data_base = sqlite3.connect(self._path_db)
+        __cursor = __data_base.cursor()
+
         try:
-
-            __data_base = sqlite3.connect(self._path_db)
-            __cursor = __data_base.cursor()
-
             print("Подключение к базе данных прошло успешно")
 
             specific_currency = __cursor.execute(f"""
@@ -56,15 +53,14 @@ class GetOutputExchangeRates(AbstractGetRequests):
             """, (code_currency[0:3], code_currency[3:]))
             self._converter_json_string(specific_currency)
 
-            if __data_base:
-                __cursor.close()
-                __data_base.close()
-
-                print("Соединение закрыто")
-
         except sqlite3.Error as error_connected:
-
             print("Ошибка при работе с SQLite", error_connected)
+
+        finally:
+            __cursor.close()
+            __data_base.close()
+
+            print("Соединение закрыто")
 
 
 def test_class():

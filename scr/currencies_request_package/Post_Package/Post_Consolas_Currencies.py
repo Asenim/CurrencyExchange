@@ -11,10 +11,11 @@ class PostConsolasCurrencies(AbstractPostRequests):
 
     def post_information(self, code_arg, fullname_arg, sign_arg):
 
+        # Подключаемся к базе данных
+        __data_base = sqlite3.connect(self._path_db)
+        __cursor = __data_base.cursor()
+
         try:
-            # Подключаемся к базе данных
-            __data_base = sqlite3.connect(self._path_db)
-            __cursor = __data_base.cursor()
 
             print("Подключение к базе данных прошло успешно")
 
@@ -31,16 +32,15 @@ class PostConsolasCurrencies(AbstractPostRequests):
             get_information = GetOutputCurrencies()
             get_information.get_specific(code_arg)
 
-            # Завершаем работу БД
-            if __data_base:
-                __cursor.close()
-                __data_base.close()
-
-                print("Соединение закрыто")
-
         except sqlite3.Error as error_connected:
 
             print("Ошибка при работе с SQLite", error_connected)
+
+        finally:
+            __cursor.close()
+            __data_base.close()
+
+            print("Соединение закрыто")
 
 
 def test_class():
