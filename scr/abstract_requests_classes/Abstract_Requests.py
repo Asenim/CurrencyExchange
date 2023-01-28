@@ -16,15 +16,3 @@ class AbstractRequests(ABC):
             self._path_db = path_data_base
         else:
             self._path_db = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
-
-    @staticmethod
-    @abstractmethod
-    def _converter_json_string(object_db):
-        """
-        Метод конвертирует информацию из запросов
-        в json строку и возвращает эту самую строку
-        для отображения.
-        :param object_db: Принимает на вход объект базы данных
-        :return: json строка/объект
-        """
-        pass

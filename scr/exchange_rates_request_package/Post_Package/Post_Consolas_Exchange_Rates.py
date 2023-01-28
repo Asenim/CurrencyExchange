@@ -1,6 +1,8 @@
 import sqlite3
-from scr.abstract_requests_classes.Abstract_Post_Requests import AbstractPostRequests
-from scr.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates import GetOutputExchangeRates
+from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Post_Requests \
+    import AbstractPostRequests
+from scr.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
+    import GetOutputExchangeRates
 
 
 class PostConsolasExchangeRates(AbstractPostRequests):
@@ -47,9 +49,7 @@ class PostConsolasExchangeRates(AbstractPostRequests):
 
             # Получаем информацию из базы данных в консоль
             get_request = base_name + target_name
-            get_information = GetOutputExchangeRates()
-            convert_json = get_information.get_specific(get_request)
-            return convert_json
+            return self._sends_information_to_client(GetOutputExchangeRates(), get_request)
 
         except sqlite3.Error as error_connected:
             print("Ошибка при работе с SQLite", error_connected)

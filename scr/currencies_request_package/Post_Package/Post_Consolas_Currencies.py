@@ -1,5 +1,6 @@
 import sqlite3
-from scr.abstract_requests_classes.Abstract_Post_Requests import AbstractPostRequests
+from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Post_Requests \
+    import AbstractPostRequests
 from scr.currencies_request_package.Get_Package.Get_Output_Consolas_Currencies import GetOutputCurrencies
 
 
@@ -47,9 +48,7 @@ class PostConsolasCurrencies(AbstractPostRequests):
             __data_base.commit()
 
             # Получаем информацию из базы данных в консоль
-            get_information = GetOutputCurrencies()
-            convert_json = get_information.get_specific(code_arg)
-            return convert_json
+            return self._sends_information_to_client(GetOutputCurrencies(), code_arg)
 
         except sqlite3.Error as error_connected:
             print("Ошибка при работе с SQLite", error_connected)
@@ -63,7 +62,7 @@ class PostConsolasCurrencies(AbstractPostRequests):
 
 def test_class():
     post_consolas_currencies = PostConsolasCurrencies()
-    post_consolas_currencies.post_information('JPY', 'Yen', 'Y')
+    post_consolas_currencies.post_information('KZH', 'Tenge', 'T')
 
 
 if __name__ == "__main__":

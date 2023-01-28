@@ -1,8 +1,9 @@
 from abc import *
-from scr.abstract_requests_classes.Abstract_Requests import AbstractRequests
+from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Changing_Requests \
+    import AbstractChangingRequests
 
 
-class AbstractPatchRequest(AbstractRequests, ABC):
+class AbstractPatchRequest(AbstractChangingRequests, ABC):
     @abstractmethod
     def __init__(self, path_data_base=None):
         """
@@ -31,8 +32,4 @@ class AbstractPatchRequest(AbstractRequests, ABC):
         Поэтому в данном классе не будет описания аргументов
         P.S. ID в таблице назначается - автоматически.
         """
-        pass
-
-    @staticmethod
-    def _converter_json_string(object_db):
         pass

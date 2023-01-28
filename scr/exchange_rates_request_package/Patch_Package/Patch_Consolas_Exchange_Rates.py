@@ -1,6 +1,8 @@
 import sqlite3
-from scr.abstract_requests_classes.Abstract_Patch_Requests import AbstractPatchRequest
-from scr.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates import GetOutputExchangeRates
+from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Patch_Requests\
+    import AbstractPatchRequest
+from scr.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
+    import GetOutputExchangeRates
 
 
 class PatchConsolasExchangeRates(AbstractPatchRequest):
@@ -16,7 +18,7 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
         """
         super().__init__(path_data_base)
 
-    def change_column(self, currency_name, meaning, change_column='Rate'):
+    def change_column(self, code_arg, meaning, change_column='Rate'):
         """
         Метод служит для изменения информации
         в нашей базе данных по переданным параметрам.
@@ -25,7 +27,7 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
             изменения конкретного столбца, по умолчанию стоит
             необходимый параметр для изменения конкретного столбца
             без острой необходимости - не изменять.
-        :param currency_name: Имя принимаемой валюты
+        :param code_arg: Имя принимаемой валюты
             из 6 символов в верхнем регистре.
         :param meaning: Значение на которое будем изменять.
         :return convert_json: Json объект, который будет
@@ -42,16 +44,14 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
                 UPDATE ExchangeRates SET {change_column} = ?
                 WHERE (SELECT ID FROM Currencies WHERE Code = ?) = BaseCurrencyID AND
                       (SELECT ID FROM Currencies WHERE Code = ?) = TargetCurrencyID;
-            """, (meaning, currency_name[0:3], currency_name[3:]))
+            """, (meaning, code_arg[0:3], code_arg[3:]))
             # Коммитим изменения
             __data_base.commit()
-            print(f'Данные {currency_name} в столбце {change_column}'
+            print(f'Данные {code_arg} в столбце {change_column}'
                   f'успешно изменены!')
 
             # Получаем информацию из базы данных в консоль
-            get_information = GetOutputExchangeRates()
-            convert_json = get_information.get_specific(currency_name)
-            return convert_json
+            return self._sends_information_to_client(GetOutputExchangeRates(), code_arg)
 
         except sqlite3.Error as error_connected:
             print("Ошибка при работе с SQLite", error_connected)
@@ -65,7 +65,7 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
 
 def test_class():
     change_object = PatchConsolasExchangeRates()
-    change_object.change_column("RUBJPY", 1.87)
+    change_object.change_column("RUBJPY", 1.85)
 
 
 if __name__ == '__main__':

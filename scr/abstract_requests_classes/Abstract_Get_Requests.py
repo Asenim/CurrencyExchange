@@ -44,6 +44,13 @@ class AbstractGetRequests(AbstractRequests, ABC):
 
     @staticmethod
     def _converter_json_string(object_db):
+        """
+        Метод конвертирует информацию из запросов
+        в json строку и возвращает эту самую строку
+        для отображения.
+        :param object_db: Принимает на вход объект базы данных
+        :return: json строка/объект
+        """
         __decode_data = object_db.fetchall()
         __data_json = json.dumps(__decode_data, indent=6, ensure_ascii=False)
 
