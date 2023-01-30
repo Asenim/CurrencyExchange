@@ -23,7 +23,3 @@ class AbstractChangingRequests(AbstractRequests, ABC):
         get_information = get_class
         convert_json = get_information.get_specific(return_result)
         return convert_json
-
-    @staticmethod
-    def _converter_json_string(object_db):
-        pass

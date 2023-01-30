@@ -76,7 +76,7 @@ class GetOutputExchangeRates(AbstractGetRequests):
                 WHERE C.Code = ? and C2.Code = ?
             """, (code_currency[0:3], code_currency[3:]))
 
-            convert_json = self._converter_json_string(__specific_currency)
+            convert_json = self._converter_json_string(__specific_currency, code_currency=code_currency)
             return convert_json
 
         except sqlite3.Error as error_connected:

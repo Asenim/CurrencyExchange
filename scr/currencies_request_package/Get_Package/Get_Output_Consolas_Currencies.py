@@ -66,7 +66,7 @@ class GetOutputCurrencies(AbstractGetRequests):
                 WHERE Code = ?;
             """, (code_currency,))
 
-            convert_json = self._converter_json_string(__specific_currency)
+            convert_json = self._converter_json_string(__specific_currency, code_currency=code_currency)
             return convert_json
 
         except sqlite3.Error as error_connected:
@@ -84,7 +84,7 @@ def test_class():
     path = 'C:/ArhitectFiles/PythonProjects/CurrencyExchange/scr/data_base_directory/admin_db.db'
     db_admin = GetOutputCurrencies(path)
     db_admin.get_all()
-    db_admin.get_specific('RUB')
+    db_admin.get_specific('RUS')
 
 
 if __name__ == "__main__":

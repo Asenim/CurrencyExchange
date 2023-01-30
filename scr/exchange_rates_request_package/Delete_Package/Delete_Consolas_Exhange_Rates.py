@@ -1,54 +1,49 @@
 import sqlite3
-from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Patch_Requests\
-    import AbstractPatchRequest
+from scr.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Delete_Requests \
+    import AbstractDeleteRequests
 from scr.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
     import GetOutputExchangeRates
 
 
-class PatchConsolasExchangeRates(AbstractPatchRequest):
+class DeleteConsolasExchangeRates(AbstractDeleteRequests):
     def __init__(self, path_data_base=None):
         """
         Задача класса состоит в том, что бы
         обратиться к таблице с одноименным названием,
-        сформировать запрос нужного формата, затем изменить
-        информацию в базе данных по переданным клиентом аргументам
-        и отправить результат изменения данных в базе - клиенту.
+        сформировать запрос нужного формата, затем удалить
+        информацию, переданную клиентом из базы данных
+        и отправить результат этого запроса - клиенту.
         :param path_data_base: Можете передать
-            параметром путь к базе данных
+        параметром путь к базе данных
         """
         super().__init__(path_data_base)
 
-    def change_column(self, code_currency, meaning, change_column='Rate'):
+    def delete_information(self, code_currency):
         """
-        Метод служит для изменения информации
+        Метод служит для удаления информации
         в нашей базе данных по переданным параметрам.
-        Метод принимает 2 аргумента.
-        :param change_column: Дополнительный параметр для
-            изменения конкретного столбца, по умолчанию стоит
-            необходимый параметр для изменения конкретного столбца
-            без острой необходимости - не изменять.
+        Метод принимает 1 аргумент.
         :param code_currency: Имя принимаемой валюты
             из 6 символов в верхнем регистре.
-        :param meaning: Значение на которое будем изменять.
         :return convert_json: Json объект, который будет
             печатать информацию в консоль и возвращать ее.
         """
+
         __data_base = sqlite3.connect(self._path_db)
         __cursor = __data_base.cursor()
 
         try:
             print("Подключение к базе данных прошло успешно")
 
-            # Изменяем информацию в базе данных
+            # Удаляем информацию из базы данных
             __add_exchange_rates = __cursor.execute(f"""
-                UPDATE ExchangeRates SET {change_column} = ?
+                DELETE FROM ExchangeRates 
                 WHERE (SELECT ID FROM Currencies WHERE Code = ?) = BaseCurrencyID AND
                       (SELECT ID FROM Currencies WHERE Code = ?) = TargetCurrencyID;
-            """, (meaning, code_currency[0:3], code_currency[3:]))
+                    """, (code_currency[0:3], code_currency[3:]))
             # Коммитим изменения
             __data_base.commit()
-            print(f'Данные {code_currency} в столбце {change_column}'
-                  f'успешно изменены!')
+            print(f'Данные {code_currency} успешно удалены!')
 
             # Получаем информацию из базы данных в консоль
             return self._sends_information_to_client(GetOutputExchangeRates(), code_currency)
@@ -64,8 +59,8 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
 
 
 def test_class():
-    change_object = PatchConsolasExchangeRates()
-    change_object.change_column("RUBJPY", 1.85)
+    delete_object = DeleteConsolasExchangeRates()
+    delete_object.delete_information("")
 
 
 if __name__ == '__main__':
