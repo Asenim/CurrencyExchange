@@ -23,7 +23,7 @@ class PostConsolasExchangeRates(AbstractPostRequests):
             level=logging.DEBUG,
             format='%(asctime)s; %(levelname)s; '
                    '%(module)s; %(lineno)s; '
-                   '%(funcName)s; %(message)s',
+                   '%(funcName)s; %(message)s'
         )
         logging.getLogger(__name__)
 

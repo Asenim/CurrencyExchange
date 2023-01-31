@@ -20,7 +20,7 @@ class GetOutputCurrencies(AbstractGetRequests):
             level=logging.DEBUG,
             format='%(asctime)s; %(levelname)s; '
                    '%(module)s; %(lineno)s; '
-                   '%(funcName)s; %(message)s',
+                   '%(funcName)s; %(message)s'
         )
         logging.getLogger(__name__)
 
@@ -90,8 +90,7 @@ class GetOutputCurrencies(AbstractGetRequests):
 
 def test_class():
 
-    path = '/src/data_base_directory/currency_db.db'
-    db_admin = GetOutputCurrencies(path)
+    db_admin = GetOutputCurrencies()
     db_admin.get_all()
     db_admin.get_specific('USD')
 
