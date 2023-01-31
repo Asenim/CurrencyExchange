@@ -1,2 +1,0 @@
-from scr.exchange_rates_request_package.Delete_Package.Delete_Consolas_Exhange_Rates \
-    import DeleteConsolasExchangeRates

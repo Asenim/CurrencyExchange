@@ -1,6 +1,7 @@
 project_plan
 venv
 .idea
+test_directory
 
 # Default ignored files
 /shelf/
