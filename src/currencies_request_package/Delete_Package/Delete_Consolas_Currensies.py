@@ -39,13 +39,14 @@ class DeleteConsolasCurrencies(AbstractDeleteRequests):
         # Подключаемся к базе данных
         __data_base = sqlite3.connect(self._path_db)
         __cursor = __data_base.cursor()
+        __cursor.execute("""PRAGMA FOREIGN_KEYS = ON;""")
 
         try:
 
             logging.info("Подключение к базе данных прошло успешно")
 
             # Удаляем информацию из базы данных
-            __add_currency = __cursor.execute("""
+            __delete_currency = __cursor.execute("""
                         DELETE FROM Currencies
                         WHERE Code = ?
                     """, (code_currency,))

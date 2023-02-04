@@ -35,6 +35,7 @@ class GetOutputExchangeRates(AbstractGetRequests):
         # Происходит подключение к базе данных
         __data_base = sqlite3.connect(self._path_db)
         __cursor = __data_base.cursor()
+        __cursor.execute("""PRAGMA FOREIGN_KEYS = ON;""")
 
         try:
             logging.info("Подключение к базе данных прошло успешно")
@@ -73,6 +74,7 @@ class GetOutputExchangeRates(AbstractGetRequests):
 
         __data_base = sqlite3.connect(self._path_db)
         __cursor = __data_base.cursor()
+        __cursor.execute("""PRAGMA FOREIGN_KEYS = ON;""")
 
         try:
             logging.info("Подключение к базе данных прошло успешно")

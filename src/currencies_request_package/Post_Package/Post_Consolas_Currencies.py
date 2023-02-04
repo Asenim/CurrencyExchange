@@ -45,6 +45,7 @@ class PostConsolasCurrencies(AbstractPostRequests):
         # Подключаемся к базе данных
         __data_base = sqlite3.connect(self._path_db)
         __cursor = __data_base.cursor()
+        __cursor.execute("""PRAGMA FOREIGN_KEYS = ON;""")
 
         try:
 
