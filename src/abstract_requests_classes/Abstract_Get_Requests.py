@@ -57,7 +57,7 @@ class AbstractGetRequests(AbstractRequests, ABC):
 
         if len(__data_json) <= 2:
             print(f'Информации о валюте {code_currency} в базе данных нет')
-            return f'Информации о валюте {code_currency} в базе данных нет'
+            return f'There is no information about the currency {code_currency} in the database'
         else:
             print(__data_json)
             return __data_json
