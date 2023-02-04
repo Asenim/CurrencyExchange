@@ -1,9 +1,11 @@
+import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from src.currencies_request_package.Get_Package.Get_Output_Consolas_Currencies \
     import GetOutputCurrencies
 from src.currencies_request_package.Post_Package.Post_Consolas_Currencies import PostConsolasCurrencies
 from src.currencies_request_package.Delete_Package.Delete_Consolas_Currensies import DeleteConsolasCurrencies
-import logging
+from src.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
+    import GetOutputExchangeRates
 
 
 class HandlerServer(BaseHTTPRequestHandler):
@@ -23,14 +25,25 @@ class HandlerServer(BaseHTTPRequestHandler):
         self.end_headers()
 
         get_currencies = GetOutputCurrencies()
+        get_exchange_rates = GetOutputExchangeRates()
 
-        # Запрос на конкретную валюту в базе данных
+        # Currencies
+        # Конкретная валюта
         if self.path.startswith('/get/currencies/'):
             self.wfile.write(bytes(get_currencies.get_specific(self.path[-3:]), 'utf-8'))
 
-        # Запрос на извлечение всех валют из базы данных
+        # Все валюты
         elif self.path.startswith('/get/currencies'):
             self.wfile.write(bytes(get_currencies.get_all(), 'utf-8'))
+
+        # Exchange Rates
+        # Конкретный курс
+        elif self.path.startswith('/get/exchange/'):
+            self.wfile.write(bytes(get_exchange_rates.get_specific(self.path[-6:]), 'utf-8'))
+
+        # Все курсы
+        elif self.path.startswith('/get/exchange'):
+            self.wfile.write(bytes(get_exchange_rates.get_all(), 'utf-8'))
 
     def do_POST(self):
 
@@ -58,7 +71,7 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         delete_currencies = DeleteConsolasCurrencies()
 
-        # Запрос на удаление валюты из базы данных
+        # Запрос на удаление конкретной валюты из базы данных
         if self.path.startswith('/delete/currencies/'):
             self.wfile.write(bytes(delete_currencies.delete_information(self.path[-3:]), 'utf-8'))
 
