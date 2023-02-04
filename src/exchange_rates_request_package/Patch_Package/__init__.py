@@ -1,0 +1,2 @@
+from src.exchange_rates_request_package.Patch_Package.Patch_Consolas_Exchange_Rates \
+    import PatchConsolasExchangeRates

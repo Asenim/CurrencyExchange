@@ -1,11 +1,7 @@
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from src.currencies_request_package.Get_Package.Get_Output_Consolas_Currencies \
-    import GetOutputCurrencies
-from src.currencies_request_package.Post_Package.Post_Consolas_Currencies import PostConsolasCurrencies
-from src.currencies_request_package.Delete_Package.Delete_Consolas_Currensies import DeleteConsolasCurrencies
-from src.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
-    import GetOutputExchangeRates
+from src.currencies_request_package.Request_Methods import *
+from src.exchange_rates_request_package.Request_Methods import *
 
 
 class HandlerServer(BaseHTTPRequestHandler):
@@ -53,7 +49,9 @@ class HandlerServer(BaseHTTPRequestHandler):
         self.end_headers()
 
         post_currencies = PostConsolasCurrencies()
+        post_exchange_rates = PostConsolasExchangeRates()
 
+        # Currency
         # Запрос на добавление валюты в базу данных
         if self.path.startswith('/post/currencies'):
             list_body_request = body_request.decode('utf-8').split('&')
@@ -61,7 +59,16 @@ class HandlerServer(BaseHTTPRequestHandler):
             logging.info('Пост запрос принят успешно')
             self.wfile.write(bytes(post_currencies.post_information(list_body_request[0],
                                                                     list_body_request[1],
-                                                                    list_body_request[2]),'utf-8'))
+                                                                    list_body_request[2]), 'utf-8'))
+
+        # Exchange rates
+        if self.path.startswith('/post/exchange'):
+            list_body_request = body_request.decode('utf-8').split('&')
+            print(list_body_request)
+            logging.info('Пост запрос принят успешно')
+            self.wfile.write(bytes(post_exchange_rates.post_information(list_body_request[0],
+                                                                        list_body_request[1],
+                                                                        list_body_request[2]), 'utf-8'))
 
     def do_DELETE(self):
 
@@ -71,6 +78,7 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         delete_currencies = DeleteConsolasCurrencies()
 
+        # Currency
         # Запрос на удаление конкретной валюты из базы данных
         if self.path.startswith('/delete/currencies/'):
             self.wfile.write(bytes(delete_currencies.delete_information(self.path[-3:]), 'utf-8'))
