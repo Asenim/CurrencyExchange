@@ -77,11 +77,16 @@ class HandlerServer(BaseHTTPRequestHandler):
         self.end_headers()
 
         delete_currencies = DeleteConsolasCurrencies()
+        delete_exchange = DeleteConsolasExchangeRates()
 
         # Currency
         # Запрос на удаление конкретной валюты из базы данных
         if self.path.startswith('/delete/currencies/'):
             self.wfile.write(bytes(delete_currencies.delete_information(self.path[-3:]), 'utf-8'))
+
+        # ExchangeRates
+        if self.path.startswith('/delete/exchange/'):
+            self.wfile.write(bytes(delete_exchange.delete_information(self.path[-6:]), 'utf-8'))
 
 
 if __name__ == "__main__":
