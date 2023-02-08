@@ -70,6 +70,22 @@ class HandlerServer(BaseHTTPRequestHandler):
                                                                         list_body_request[1],
                                                                         list_body_request[2]), 'utf-8'))
 
+    def do_PATCH(self):
+
+        self.send_response(200)
+        self.send_header("Content-type", "application/x-www-form-urlencoded")
+        body_request = (self.rfile.read(int(self.headers['Content-Length'])))
+        self.end_headers()
+
+        patch_exchange_rates = PatchConsolasExchangeRates()
+
+        if self.path.startswith('/patch/exchange/'):
+            list_body_request = body_request.decode('utf-8').split('&')
+            print(list_body_request)
+            logging.info('Патч запрос принят успешно')
+            self.wfile.write(bytes(patch_exchange_rates.change_column(self.path[-6:],
+                                                                      list_body_request[0]), 'utf-8'))
+
     def do_DELETE(self):
 
         self.send_response(200)

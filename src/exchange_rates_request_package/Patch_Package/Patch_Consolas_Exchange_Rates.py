@@ -1,9 +1,9 @@
 import sqlite3
+import logging
 from src.abstract_requests_classes.abstract_changing_requests_directory.Abstract_Patch_Requests\
     import AbstractPatchRequest
 from src.exchange_rates_request_package.Get_Package.Get_Output_Consolas_Exchange_Rates \
     import GetOutputExchangeRates
-import logging
 
 
 class PatchConsolasExchangeRates(AbstractPatchRequest):
@@ -57,8 +57,8 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
             """, (meaning, code_currency[0:3], code_currency[3:]))
             # Коммитим изменения
             __data_base.commit()
-            print(f'Данные {code_currency} в столбце {change_column}'
-                  f'успешно изменены!')
+            logging.info(f'Данные {code_currency} в столбце {change_column}'
+                         f'успешно изменены!')
 
             # Получаем информацию из базы данных в консоль
             return self._sends_information_to_client(GetOutputExchangeRates(), code_currency)
