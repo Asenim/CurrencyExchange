@@ -79,6 +79,7 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         patch_exchange_rates = PatchConsolasExchangeRates()
 
+        # Запрос на изменение курса валюты
         if self.path.startswith('/patch/exchange/'):
             list_body_request = body_request.decode('utf-8').split('&')
             print(list_body_request)

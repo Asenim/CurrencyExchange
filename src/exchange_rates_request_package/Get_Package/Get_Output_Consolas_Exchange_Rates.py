@@ -1,6 +1,6 @@
 import sqlite3
-from src.abstract_requests_classes.Abstract_Get_Requests import AbstractGetRequests
 import logging
+from src.abstract_requests_classes.Abstract_Get_Requests import AbstractGetRequests
 
 
 class GetOutputExchangeRates(AbstractGetRequests):

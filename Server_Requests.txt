@@ -1,0 +1,45 @@
+# Получить валюту из Currencies
+GET http://localhost:7080//get/currencies/TRY
+Accept: application/json
+
+###
+# Добавить валюту в Currencies
+POST http://localhost:7080/post/currencies
+Content-Type: application/x-www-form-urlencoded
+Accept: application/x-www-form-urlencoded
+
+
+TRY&Turkish Lira&t
+
+###
+
+# Удалить валюту из Currencies
+DELETE http://localhost:7080/delete/currencies/TRY
+Accept: application/json
+
+###
+# Получить пары валют из ExchangeRates
+GET http://localhost:7080/get/exchange
+Accept: application/json
+
+
+###
+# Добавить пары валют в ExchangeRates
+POST http://localhost:7080/post/exchange
+Content-Type: application/x-www-form-urlencoded
+Accept: application/x-www-form-urlencoded
+
+
+RUB&TRY&0.27
+
+###
+
+PATCH http://localhost:7080/patch/exchange/RUBTRY
+Content-Type: application/x-www-form-urlencoded
+Accept: application/x-www-form-urlencoded
+
+
+
+0.30
+
+###
