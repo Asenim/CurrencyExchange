@@ -2,6 +2,7 @@ import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from src.currencies_request_package.Request_Methods import *
 from src.exchange_rates_request_package.Request_Methods import *
+from src.Currency_Exchange_Servises import CurrencyExchangeRates
 
 
 class HandlerServer(BaseHTTPRequestHandler):
@@ -25,20 +26,20 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         # Currencies
         # Конкретная валюта
-        if self.path.startswith('/get/currencies/'):
+        if self.path.startswith('/currencies/'):
             self.wfile.write(bytes(get_currencies.get_specific(self.path[-3:]), 'utf-8'))
 
         # Все валюты
-        elif self.path.startswith('/get/currencies'):
+        elif self.path.startswith('/currencies'):
             self.wfile.write(bytes(get_currencies.get_all(), 'utf-8'))
 
         # Exchange Rates
         # Конкретный курс
-        elif self.path.startswith('/get/exchange/'):
+        elif self.path.startswith('/exchange/'):
             self.wfile.write(bytes(get_exchange_rates.get_specific(self.path[-6:]), 'utf-8'))
 
         # Все курсы
-        elif self.path.startswith('/get/exchange'):
+        elif self.path.startswith('/exchange'):
             self.wfile.write(bytes(get_exchange_rates.get_all(), 'utf-8'))
 
     def do_POST(self):
@@ -53,7 +54,7 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         # Currency
         # Запрос на добавление валюты в базу данных
-        if self.path.startswith('/post/currencies'):
+        if self.path.startswith('/currencies'):
             list_body_request = body_request.decode('utf-8').split('&')
             print(list_body_request)
             logging.info('Пост запрос принят успешно')
@@ -62,7 +63,7 @@ class HandlerServer(BaseHTTPRequestHandler):
                                                                     list_body_request[2]), 'utf-8'))
 
         # Exchange rates
-        if self.path.startswith('/post/exchange'):
+        if self.path.startswith('/exchange'):
             list_body_request = body_request.decode('utf-8').split('&')
             print(list_body_request)
             logging.info('Пост запрос принят успешно')
@@ -80,7 +81,7 @@ class HandlerServer(BaseHTTPRequestHandler):
         patch_exchange_rates = PatchConsolasExchangeRates()
 
         # Запрос на изменение курса валюты
-        if self.path.startswith('/patch/exchange/'):
+        if self.path.startswith('/exchange/'):
             list_body_request = body_request.decode('utf-8').split('&')
             print(list_body_request)
             logging.info('Патч запрос принят успешно')
@@ -98,11 +99,11 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         # Currency
         # Запрос на удаление конкретной валюты из базы данных
-        if self.path.startswith('/delete/currencies/'):
+        if self.path.startswith('/currencies/'):
             self.wfile.write(bytes(delete_currencies.delete_information(self.path[-3:]), 'utf-8'))
 
         # ExchangeRates
-        if self.path.startswith('/delete/exchange/'):
+        if self.path.startswith('/exchange/'):
             self.wfile.write(bytes(delete_exchange.delete_information(self.path[-6:]), 'utf-8'))
 
 
