@@ -2,7 +2,6 @@ import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from src.currencies_request_package.Request_Methods import *
 from src.exchange_rates_request_package.Request_Methods import *
-from src.Currency_Exchange_Servises import CurrencyExchangeRates
 
 
 class HandlerServer(BaseHTTPRequestHandler):
