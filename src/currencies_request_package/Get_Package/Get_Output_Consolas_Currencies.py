@@ -44,8 +44,10 @@ class GetOutputCurrencies(AbstractGetRequests):
             __all_data = __cursor.execute(f"""
                 SELECT * FROM Currencies;
             """)
+            __all_data_decode = __all_data.fetchall()
+            __dict_all = self.dict_result_all(__all_data_decode)
 
-            convert_json = self._converter_json_string(__all_data)
+            convert_json = self._converter_json_string(__dict_all)
             return convert_json
 
         except sqlite3.Error as error_connected:
@@ -77,7 +79,10 @@ class GetOutputCurrencies(AbstractGetRequests):
                 WHERE Code = ?;
             """, (code_currency,))
 
-            convert_json = self._converter_json_string(__specific_currency, code_currency=code_currency)
+            __specific_decode = __specific_currency.fetchall()
+            __dict_result = self.dict_result_specific(__specific_decode)
+
+            convert_json = self._converter_json_string(__dict_result, code_currency=code_currency)
             return convert_json
 
         except sqlite3.Error as error_connected:
@@ -89,11 +94,38 @@ class GetOutputCurrencies(AbstractGetRequests):
 
             logging.info("Соединение с базой данных закрыто")
 
+    @staticmethod
+    def dict_result_all(list_object):
+        __list_result = []
+        __list_data = list_object
+
+        for element in __list_data:
+            __list_result.append({
+                'id': element[0],
+                'name': element[1],
+                'code': element[2],
+                'sign': element[3]
+                                         })
+
+        return __list_result
+
+    @staticmethod
+    def dict_result_specific(list_object):
+        __dict_result = {}
+        __list_data = list_object
+
+        __dict_result['id'] = __list_data[0][0]
+        __dict_result['name'] = __list_data[0][1]
+        __dict_result['code'] = __list_data[0][2]
+        __dict_result['sign'] = __list_data[0][3]
+
+        return __dict_result
+
 
 def test_class():
 
     db_admin = GetOutputCurrencies()
-    db_admin.get_all()
+    # db_admin.get_all()
     db_admin.get_specific('USD')
 
 

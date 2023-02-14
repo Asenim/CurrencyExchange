@@ -63,7 +63,7 @@ class CurrencyExchangeRates(AbstractServicesClass):
 
             if len(__exchange_decode) > 0:
                 __result = float(__exchange_decode[0][0]) * float(amount)
-                __dict_result = __result_data.dict_result(base, target, __exchange_decode[0][0], amount, __result)
+                __dict_result = __result_data.dict_convert_result(base, target, __exchange_decode[0][0], amount, __result)
 
                 __code_currency = base + target
                 return __result_data.converter_json_string(__dict_result, __code_currency)
@@ -79,7 +79,7 @@ class CurrencyExchangeRates(AbstractServicesClass):
                 __exchange_decode = __exchange.fetchall()
                 __reverse_course = 1 // __exchange_decode[0][0]
                 __result = __reverse_course * amount
-                __dict_result = __result_data.dict_result(target, base, __reverse_course, amount, __result)
+                __dict_result = __result_data.dict_convert_result(target, base, __reverse_course, amount, __result)
 
                 __code_currency = base + target
                 return __result_data.converter_json_string(__dict_result, __code_currency)

@@ -43,17 +43,18 @@ class AbstractGetRequests(AbstractRequests, ABC):
         pass
 
     @staticmethod
-    def _converter_json_string(object_db, code_currency=None):
+    def _converter_json_string(data_object, code_currency=None):
         """
         Метод конвертирует информацию из запросов
         в json строку и возвращает эту самую строку
         для отображения.
-        :param object_db: Принимает на вход объект базы данных.
-        :param code_currency: Принимает на вход код валюты
-        :return: json строка/объект
+        :param data_object: Принимает на вход объект данных
+            в формате dict.
+        :param code_currency: Принимает на вход код валюты.
+        :return: json строка/объект.
         """
-        __decode_data = object_db.fetchall()
-        __data_json = json.dumps(__decode_data, sort_keys=True, indent=6, ensure_ascii=False)
+        __data_object = data_object
+        __data_json = json.dumps(__data_object, sort_keys=True, indent=4, ensure_ascii=False)
 
         if len(__data_json) <= 2:
             print(f'Информации о валюте {code_currency} в базе данных нет')

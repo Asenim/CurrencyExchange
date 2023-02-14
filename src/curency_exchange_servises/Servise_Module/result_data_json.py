@@ -16,7 +16,7 @@ class ResultDataJson(AbstractServicesClass):
         super().__init__(path_data_base)
 
     @staticmethod
-    def dict_result(base_curr, target_curr, rate, amount, result):
+    def dict_convert_result(base_curr, target_curr, rate, amount, result):
         """
         Формирует словарь который в следствии будет конвертирован
         в json объект/файл.
