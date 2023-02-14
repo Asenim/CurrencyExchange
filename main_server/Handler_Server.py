@@ -2,6 +2,8 @@ import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from src.currencies_request_package.Request_Methods import *
 from src.exchange_rates_request_package.Request_Methods import *
+from src.curency_exchange_servises.Currency_Exchange_Servises \
+    import CurrencyExchangeRates
 
 
 class HandlerServer(BaseHTTPRequestHandler):
@@ -22,6 +24,7 @@ class HandlerServer(BaseHTTPRequestHandler):
 
         get_currencies = GetOutputCurrencies()
         get_exchange_rates = GetOutputExchangeRates()
+        get_exchange_convert = CurrencyExchangeRates()
 
         # Currencies
         # Конкретная валюта
@@ -36,6 +39,24 @@ class HandlerServer(BaseHTTPRequestHandler):
         # Конкретный курс
         elif self.path.startswith('/exchange/'):
             self.wfile.write(bytes(get_exchange_rates.get_specific(self.path[-6:]), 'utf-8'))
+
+        # Exchange Services
+        # Сервис по обмену валюты
+        elif self.path.startswith('/exchange?'):
+            # Парсим значения из URL
+            index_str = self.path.find('?')
+            result_url = self.path[index_str+1:]
+            list_result_url = result_url.split('&')
+            dict_result = {}
+
+            for element in list_result_url:
+                el_list = element.split('=')
+                dict_result[el_list[0]] = el_list[1]
+
+            # Парсинг завершен отправляем запрос на получение данных
+            self.wfile.write(bytes(get_exchange_convert.exchange_currency(dict_result['from'],
+                                                                          dict_result['to'],
+                                                                          dict_result['amount']), 'utf-8'))
 
         # Все курсы
         elif self.path.startswith('/exchange'):

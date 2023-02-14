@@ -1,6 +1,6 @@
 import sqlite3
 import logging
-from Servise_Module import *
+from src.curency_exchange_servises.Servise_Module import *
 
 
 class CurrencyExchangeRates(AbstractServicesClass):
@@ -62,7 +62,7 @@ class CurrencyExchangeRates(AbstractServicesClass):
             __result_data = ResultDataJson()
 
             if len(__exchange_decode) > 0:
-                __result = __exchange_decode[0][0] * amount
+                __result = float(__exchange_decode[0][0]) * float(amount)
                 __dict_result = __result_data.dict_result(base, target, __exchange_decode[0][0], amount, __result)
 
                 __code_currency = base + target
