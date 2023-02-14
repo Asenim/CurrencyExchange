@@ -54,7 +54,7 @@ class AbstractGetRequests(AbstractRequests, ABC):
         :return: json строка/объект.
         """
         __data_object = data_object
-        __data_json = json.dumps(__data_object, sort_keys=True, indent=4, ensure_ascii=False)
+        __data_json = json.dumps(__data_object, indent=4, ensure_ascii=False)
 
         if len(__data_json) <= 2:
             print(f'Информации о валюте {code_currency} в базе данных нет')

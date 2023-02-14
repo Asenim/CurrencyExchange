@@ -125,7 +125,7 @@ class GetOutputCurrencies(AbstractGetRequests):
 def test_class():
 
     db_admin = GetOutputCurrencies()
-    # db_admin.get_all()
+    db_admin.get_all()
     db_admin.get_specific('USD')
 
 

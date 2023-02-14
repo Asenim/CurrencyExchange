@@ -1,6 +1,7 @@
 import sqlite3
 import logging
 from src.abstract_requests_classes.Abstract_Get_Requests import AbstractGetRequests
+from src.curency_exchange_servises.Servise_Module.base_target_classes import BaseTargetClasses
 
 
 class GetOutputExchangeRates(AbstractGetRequests):
@@ -48,8 +49,11 @@ class GetOutputExchangeRates(AbstractGetRequests):
                 JOIN Currencies C2 on E.TargetCurrencyID = C2.ID;
             """)
 
-            convert_json = self._converter_json_string(__all_data)
-            return convert_json
+            __all_data_decode = __all_data.fetchall()
+            __dict_result = self.dict_all_result(__all_data_decode)
+
+            __convert_json = self._converter_json_string(__dict_result)
+            return __convert_json
 
         except sqlite3.Error as error_connected:
             logging.info("Ошибка при работе с SQLite", error_connected)
@@ -87,8 +91,11 @@ class GetOutputExchangeRates(AbstractGetRequests):
                 WHERE C.Code = ? and C2.Code = ?
             """, (code_currency[0:3], code_currency[3:]))
 
-            convert_json = self._converter_json_string(__specific_currency, code_currency=code_currency)
-            return convert_json
+            __specific_currency_decode = __specific_currency.fetchall()
+            __dict_result = self.dict_specific_result(__specific_currency_decode)
+
+            __convert_json = self._converter_json_string(__dict_result, code_currency=code_currency)
+            return __convert_json
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)
@@ -98,6 +105,46 @@ class GetOutputExchangeRates(AbstractGetRequests):
             __data_base.close()
 
             logging.info("Соединение с базой данных закрыто")
+
+    @staticmethod
+    def dict_all_result(object_db):
+        __list_result = []
+        __data_list = object_db
+
+        for element in __data_list:
+            bt_object = BaseTargetClasses()
+            __base_currency = bt_object.base_select(element[1])
+            __target_currency = bt_object.target_select(element[2])
+            __list_result.append({
+                'Id': element[0],
+                'BaseCurrency': __base_currency,
+                'TargetCurrency': __target_currency,
+                'Rate': element[3]
+            })
+
+        return __list_result
+
+    @staticmethod
+    def dict_specific_result(object_db):
+        """
+        Формирует словарь который в следствии будет конвертирован
+        в json объект/файл.
+        Конвертация происходит не в этом методе.
+        :param object_db: объект базы данных.
+        :return __dicts_result: Готовый словарь с данными.
+        """
+        bt_object = BaseTargetClasses()
+        __data_list = object_db
+        __base_currency = bt_object.base_select(__data_list[0][1])
+        __target_currency = bt_object.target_select(__data_list[0][2])
+        __dicts_result = {
+            'Id': __data_list[0][0],
+            'BaseCurrency': __base_currency,
+            'TargetCurrency': __target_currency,
+            'Rate': __data_list[0][3]
+        }
+
+        return __dicts_result
 
 
 def test_class():
