@@ -85,6 +85,7 @@ class PostConsolasCurrencies(AbstractPostRequests):
 def test_class():
     post_consolas_currencies = PostConsolasCurrencies()
     post_consolas_currencies.post_information('KZH', 'Tenge', 'T')
+    #   post_consolas_currencies.post_information('TRY', 'Turkish Lira', 't')
 
 
 if __name__ == "__main__":
