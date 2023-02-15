@@ -45,18 +45,28 @@ class DeleteConsolasCurrencies(AbstractDeleteRequests):
 
             logging.info("Подключение к базе данных прошло успешно")
 
-            # Удаляем информацию из базы данных
-            __delete_currency = __cursor.execute("""
-                        DELETE FROM Currencies
-                        WHERE Code = ?
-                    """, (code_currency,))
+            try:
 
-            # Коммитим изменения
-            print(f'Данные {code_currency} успешно удалены!')
-            __data_base.commit()
+                # Удаляем информацию из базы данных
+                __delete_currency = __cursor.execute("""
+                            DELETE FROM Currencies
+                            WHERE Code = ?
+                        """, (code_currency,))
 
-            # Получаем информацию из базы данных в консоль
-            return self._sends_information_to_client(GetOutputCurrencies(), code_currency)
+                # Коммитим изменения
+                print(f'Данные {code_currency} успешно удалены!')
+                __data_base.commit()
+
+                # Получаем информацию из базы данных в консоль
+                return self._sends_information_to_client(GetOutputCurrencies(), code_currency)
+
+            except sqlite3.Error as err:
+                error_message = {
+                    code_currency: '!!!There is no such currency to delete in the database!!!'
+                }
+                logging.info(f'Такой валюты для удаления - нет в базе данных, {err}')
+
+                return self._converter_json_string(error_message)
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)

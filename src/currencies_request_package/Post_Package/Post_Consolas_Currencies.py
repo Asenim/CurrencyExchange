@@ -33,13 +33,13 @@ class PostConsolasCurrencies(AbstractPostRequests):
         которую передал клиент для отправки
         в нашу удаленную базу данных.
         Метод принимает 3 аргумента.
-        :param code_arg: Код валюты 3 символа в верхнем регистре
+        :param code_arg: Код валюты 3 символа в верхнем регистре.
         :param fullname_arg: Полное имя валюты Символы  любой длины
             первая буква в верхнем регистре, остальные в нижнем,
-            разделение слов происходит через пробел
+            разделение слов происходит через пробел.
         :param sign_arg: Знак\Сигнатура валюты длиной обычно в
-            один символ
-        :return convert_json: json объект который был
+            один символ.
+        :return convert_json: json объект, который был
         сформирован в методе.
         """
         # Подключаемся к базе данных
@@ -51,17 +51,26 @@ class PostConsolasCurrencies(AbstractPostRequests):
 
             logging.info("Подключение к базе данных прошло успешно")
 
-            # Добавляем информацию в базу данных
-            __add_currency = __cursor.execute("""
-                INSERT INTO Currencies(Code, FullName, Sign)
-                VALUES(?, ?, ?)
-            """, (code_arg, fullname_arg, sign_arg))
+            try:
+                # Добавляем информацию в базу данных
+                __add_currency = __cursor.execute("""
+                    INSERT INTO Currencies(Code, FullName, Sign)
+                    VALUES(?, ?, ?)
+                """, (code_arg, fullname_arg, sign_arg))
 
-            # Коммитим изменения
-            __data_base.commit()
+                # Коммитим изменения
+                __data_base.commit()
 
-            # Получаем информацию из базы данных в консоль
-            return self._sends_information_to_client(GetOutputCurrencies(), code_arg)
+                # Получаем информацию из базы данных в консоль
+                return self._sends_information_to_client(GetOutputCurrencies(), code_arg)
+
+            except sqlite3.Error as err:
+                error_message = {
+                    code_arg: '!!!This currency is already in the database!!!'
+                }
+                logging.info(f'Такая валюта уже есть в базе данных, {err}')
+
+                return self._converter_json_string(error_message)
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)

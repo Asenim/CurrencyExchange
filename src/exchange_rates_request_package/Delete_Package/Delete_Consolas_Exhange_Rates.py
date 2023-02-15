@@ -45,18 +45,27 @@ class DeleteConsolasExchangeRates(AbstractDeleteRequests):
         try:
             logging.info("Подключение к базе данных прошло успешно")
 
-            # Удаляем информацию из базы данных
-            __add_exchange_rates = __cursor.execute(f"""
-                DELETE FROM ExchangeRates 
-                WHERE (SELECT ID FROM Currencies WHERE Code = ?) = BaseCurrencyID AND
-                      (SELECT ID FROM Currencies WHERE Code = ?) = TargetCurrencyID;
-                    """, (code_currency[0:3], code_currency[3:]))
-            # Коммитим изменения
-            __data_base.commit()
-            print(f'Данные {code_currency} успешно удалены!')
+            try:
+                # Удаляем информацию из базы данных
+                __add_exchange_rates = __cursor.execute(f"""
+                    DELETE FROM ExchangeRates 
+                    WHERE (SELECT ID FROM Currencies WHERE Code = ?) = BaseCurrencyID AND
+                          (SELECT ID FROM Currencies WHERE Code = ?) = TargetCurrencyID;
+                        """, (code_currency[0:3], code_currency[3:]))
+                # Коммитим изменения
+                __data_base.commit()
+                print(f'Данные {code_currency} успешно удалены!')
 
-            # Получаем информацию из базы данных в консоль
-            return self._sends_information_to_client(GetOutputExchangeRates(), code_currency)
+                # Получаем информацию из базы данных в консоль
+                return self._sends_information_to_client(GetOutputExchangeRates(), code_currency)
+
+            except IndexError as err:
+                error_message = {
+                    code_currency: '!!!There is no such course for deletion in the database!!!'
+                }
+                logging.info(f'Такого курса для удаления в базе данных - нет, {err}')
+
+                return self._converter_json_string(error_message)
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)
@@ -70,7 +79,7 @@ class DeleteConsolasExchangeRates(AbstractDeleteRequests):
 
 def test_class():
     delete_object = DeleteConsolasExchangeRates()
-    delete_object.delete_information("JPYRUB")
+    delete_object.delete_information("KIRAUD")
 
 
 if __name__ == '__main__':

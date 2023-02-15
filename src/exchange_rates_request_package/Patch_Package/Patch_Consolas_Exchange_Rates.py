@@ -76,6 +76,7 @@ class PatchConsolasExchangeRates(AbstractPatchRequest):
 def test_class():
     change_object = PatchConsolasExchangeRates()
     change_object.change_column("RUBJPY", 1.85)
+    change_object.change_column("RUBSOR", 1.50)
 
 
 if __name__ == '__main__':

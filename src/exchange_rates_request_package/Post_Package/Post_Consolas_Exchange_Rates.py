@@ -47,19 +47,30 @@ class PostConsolasExchangeRates(AbstractPostRequests):
         try:
             logging.info("Подключение к базе данных прошло успешно")
 
-            # Добавляем информацию в базу данных
-            __add_exchange_rates = __cursor.execute("""
-                INSERT INTO ExchangeRates(BaseCurrencyID, TargetCurrencyID, Rate)
-                VALUES((SELECT ID FROM Currencies WHERE Code = ?),
-                        (SELECT ID FROM Currencies WHERE Code = ?), ?)
-            """, (base_name, target_name, rate))
-            # Коммитим изменения
-            __data_base.commit()
-            print(f'В базу данных добавлен новый курс {base_name}/{target_name}')
+            try:
+                # Добавляем информацию в базу данных
+                __add_exchange_rates = __cursor.execute("""
+                    INSERT INTO ExchangeRates(BaseCurrencyID, TargetCurrencyID, Rate)
+                    VALUES((SELECT ID FROM Currencies WHERE Code = ?),
+                            (SELECT ID FROM Currencies WHERE Code = ?), ?)
+                """, (base_name, target_name, rate))
 
-            # Получаем информацию из базы данных в консоль
-            get_request = base_name + target_name
-            return self._sends_information_to_client(GetOutputExchangeRates(), get_request)
+                # Коммитим изменения
+                __data_base.commit()
+                print(f'В базу данных добавлен новый курс {base_name}/{target_name}')
+
+                # Получаем информацию из базы данных в консоль
+                get_request = base_name + target_name
+                return self._sends_information_to_client(GetOutputExchangeRates(), get_request)
+
+            except sqlite3.Error as err:
+                get_request = base_name + target_name
+                error_message = {
+                    get_request: '!!!Such a course is already in the database!!!'
+                }
+                logging.info(f'Такой курс уже есть в базе данных, {err}')
+
+                return self._converter_json_string(error_message)
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)

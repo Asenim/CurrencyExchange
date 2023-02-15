@@ -74,16 +74,25 @@ class GetOutputCurrencies(AbstractGetRequests):
         try:
             logging.info("Подключение к базе данных прошло успешно")
 
-            __specific_currency = __cursor.execute(f"""
-                SELECT * FROM Currencies
-                WHERE Code = ?;
-            """, (code_currency,))
+            try:
+                __specific_currency = __cursor.execute(f"""
+                    SELECT * FROM Currencies
+                    WHERE Code = ?;
+                """, (code_currency,))
 
-            __specific_decode = __specific_currency.fetchall()
-            __dict_result = self.dict_result_specific(__specific_decode)
+                __specific_decode = __specific_currency.fetchall()
+                __dict_result = self.dict_result_specific(__specific_decode)
 
-            convert_json = self._converter_json_string(__dict_result, code_currency=code_currency)
-            return convert_json
+                convert_json = self._converter_json_string(__dict_result, code_currency=code_currency)
+                return convert_json
+
+            except IndexError as err:
+                error_message = {
+                    code_currency: '!!!Currency not found!!!'
+                }
+                logging.info(f'Валюта не найдена, {err}')
+
+                return self._converter_json_string(error_message)
 
         except sqlite3.Error as error_connected:
             logging.error("Ошибка при работе с SQLite", error_connected)
@@ -126,7 +135,8 @@ def test_class():
 
     db_admin = GetOutputCurrencies()
     db_admin.get_all()
-    db_admin.get_specific('USD')
+    db_admin.get_specific('RUB')
+    db_admin.get_specific('AUD')
 
 
 if __name__ == "__main__":
