@@ -119,10 +119,10 @@ class HandlerServer(BaseHTTPRequestHandler):
         # Запрос на изменение курса валюты
         if self.path.startswith('/exchange/'):
             list_body_request = body_request.decode('utf-8').split('&')
-            print(list_body_request)
+            dict_body_request = convert_request_on_dict(list_body_request)
             logging.info('Патч запрос принят успешно')
             self.wfile.write(bytes(patch_exchange_rates.change_column(self.path[-6:],
-                                                                      list_body_request[0]), 'utf-8'))
+                                                                      dict_body_request['rate']), 'utf-8'))
 
     def do_DELETE(self):
 
