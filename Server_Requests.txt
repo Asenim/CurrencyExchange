@@ -19,7 +19,7 @@ Accept: application/json
 
 ###
 # Получить пары валют из ExchangeRates
-GET http://localhost:7080/get/exchange
+GET http://localhost:7080/exchange
 Accept: application/json
 
 

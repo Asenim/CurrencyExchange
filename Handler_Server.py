@@ -6,6 +6,19 @@ from src.curency_exchange_servises.Currency_Exchange_Servises \
     import CurrencyExchangeRates
 
 
+def convert_request_on_dict(request_list):
+    list_body_request = request_list
+    dict_body_request = {}
+
+    for item_list in list_body_request:
+        item_list = item_list.split('=')
+        dict_body_request[item_list[0]] = item_list[1]
+
+    print(list_body_request)
+    print(dict_body_request)
+    return dict_body_request
+
+
 class HandlerServer(BaseHTTPRequestHandler):
 
     logging.basicConfig(
@@ -76,20 +89,23 @@ class HandlerServer(BaseHTTPRequestHandler):
         # Запрос на добавление валюты в базу данных
         if self.path.startswith('/currencies'):
             list_body_request = body_request.decode('utf-8').split('&')
-            print(list_body_request)
+            dict_body_request = convert_request_on_dict(list_body_request)
+
             logging.info('Пост запрос принят успешно')
-            self.wfile.write(bytes(post_currencies.post_information(list_body_request[0],
-                                                                    list_body_request[1],
-                                                                    list_body_request[2]), 'utf-8'))
+            self.wfile.write(bytes(post_currencies.post_information(dict_body_request['code'],
+                                                                    dict_body_request['name'],
+                                                                    dict_body_request['sign']), 'utf-8'))
 
         # Exchange rates
         if self.path.startswith('/exchange'):
             list_body_request = body_request.decode('utf-8').split('&')
-            print(list_body_request)
+            dict_body_request = convert_request_on_dict(list_body_request)
+
             logging.info('Пост запрос принят успешно')
-            self.wfile.write(bytes(post_exchange_rates.post_information(list_body_request[0],
-                                                                        list_body_request[1],
-                                                                        list_body_request[2]), 'utf-8'))
+
+            self.wfile.write(bytes(post_exchange_rates.post_information(dict_body_request['baseCurrencyCode'],
+                                                                        dict_body_request['targetCurrencyCode'],
+                                                                        dict_body_request['rate']), 'utf-8'))
 
     def do_PATCH(self):
 
